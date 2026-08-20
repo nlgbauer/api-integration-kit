@@ -1,0 +1,140 @@
+# GitHub REST eval set.
+#
+# Every task asserts on EFFECT, not on generated text.
+# `expect_endpoint` is the ground-truth (METHOD PATH) used to measure retrieval
+# recall separately from task success. If retrieval misses, the generator was
+# never given a chance, and that is a different bug than a bad generation.
+#
+# `mock_turns` scripts the MockGenerator so `--llm mock` exercises the full
+# pipeline offline. Several are deliberately wrong on turn 1 to drive the
+# repair loop. Mock runs are for testing the harness, never for reporting.
+
+- id: gh-001
+  prompt: "What is my current GitHub API rate limit and how many requests do I have left?"
+  expect_endpoint: "GET /rate_limit"
+  assert:
+    - type: status
+      value: 200
+    - type: path_exists
+      path: "resources.core.limit"
+  mock_turns:
+    - {method: GET, path: "/rate_limit"}
+
+- id: gh-002
+  prompt: "Who am I authenticated as? Return the account's login."
+  expect_endpoint: "GET /user"
+  assert:
+    - type: path_exists
+      path: "login"
+  mock_turns:
+    - {method: GET, path: "/user"}
+
+- id: gh-003
+  prompt: >
+    List the 5 most recently updated public repositories belonging to the
+    GitHub organization "anthropics".
+  expect_endpoint: "GET /orgs/{org}/repos"
+  assert:
+    - type: count
+      max: 5
+      min: 1
+    - type: path_exists
+      path: "[0].full_name"
+  mock_turns:
+    - {method: GET, path: "/orgs/{org}/repos", path_params: {org: anthropics},
+       query: {type: public, sort: updated, per_page: 5}}
+
+- id: gh-004
+  prompt: >
+    Search GitHub for the 3 most-starred Python repositories about OpenAPI
+    validation.
+  expect_endpoint: "GET /search/repositories"
+  assert:
+    - type: path_exists
+      path: "items[0].full_name"
+    - type: count
+      path: "items"
+      max: 3
+  mock_turns:
+    - {method: GET, path: "/search/repositories",
+       query: {q: "openapi validation language:python", sort: stars, order: desc, per_page: 3}}
+
+- id: gh-005
+  prompt: >
+    Show me up to 10 open issues labeled "bug" in the repository
+    openai/openai-python.
+  expect_endpoint: "GET /repos/{owner}/{repo}/issues"
+  assert:
+    - type: status
+      value: 200
+    - type: count
+      max: 10
+  mock_turns:
+    - {method: GET, path: "/repos/{owner}/{repo}/issues",
+       path_params: {owner: openai, repo: openai-python},
+       query: {state: open, labels: bug, per_page: 10}}
+
+- id: gh-006
+  prompt: >
+    List the 5 most recent commits on the main branch of python/cpython that
+    were made after 2026-01-01.
+  expect_endpoint: "GET /repos/{owner}/{repo}/commits"
+  assert:
+    - type: count
+      max: 5
+      min: 1
+    - type: path_exists
+      path: "[0].sha"
+  mock_turns:
+    # Turn 1: invents `branch` (the real parameter is `sha`) and `limit`.
+    - {method: GET, path: "/repos/{owner}/{repo}/commits",
+       path_params: {owner: python, repo: cpython},
+       query: {branch: main, since: "2026-01-01T00:00:00Z", limit: 5}}
+    - {method: GET, path: "/repos/{owner}/{repo}/commits",
+       path_params: {owner: python, repo: cpython},
+       query: {sha: main, since: "2026-01-01T00:00:00Z", per_page: 5}}
+
+- id: gh-007
+  prompt: >
+    Create a public gist titled "harness smoke test" containing a single file
+    named smoke.txt with the contents "ok".
+  expect_endpoint: "POST /gists"
+  assert:
+    - type: status
+      value: 201
+    - type: path_equals
+      path: "public"
+      value: true
+    - type: path_exists
+      path: "files.smoke\\.txt"
+  teardown:
+    method: DELETE
+    path: "/gists/{gist_id}"
+    id_param: gist_id
+    id_from: "id"
+  mock_turns:
+    - {method: POST, path: "/gists",
+       body: {description: "harness smoke test", public: true,
+              files: {"smoke.txt": {content: "ok"}}}}
+
+- id: gh-008
+  prompt: >
+    List the 3 repositories owned by the user "torvalds", most recently pushed
+    first.
+  expect_endpoint: "GET /users/{username}/repos"
+  assert:
+    - type: count
+      max: 3
+      min: 1
+    - type: path_exists
+      path: "[0].pushed_at"
+  mock_turns:
+    # Turn 1: `order` is invented. GitHub's parameter is `direction`.
+    # This is the canonical pre-flight catch: caught with a named suggestion
+    # before any network call, instead of as an ignored-silently no-op.
+    - {method: GET, path: "/users/{username}/repos",
+       path_params: {username: torvalds},
+       query: {sort: pushed, order: desc, per_page: 3}}
+    - {method: GET, path: "/users/{username}/repos",
+       path_params: {username: torvalds},
+       query: {sort: pushed, direction: desc, per_page: 3}}

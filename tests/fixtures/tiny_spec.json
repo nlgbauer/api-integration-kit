@@ -1,0 +1,54 @@
+{
+  "openapi": "3.0.3",
+  "info": {"title": "Tiny", "version": "1.0"},
+  "servers": [{"url": "https://api.tiny.test"}],
+  "components": {
+    "schemas": {
+      "NewWidget": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string"},
+          "color": {"type": "string", "enum": ["red", "blue"]},
+          "count": {"type": "integer"}
+        }
+      }
+    },
+    "parameters": {
+      "PerPage": {
+        "name": "per_page",
+        "in": "query",
+        "schema": {"type": "integer"}
+      }
+    }
+  },
+  "paths": {
+    "/widgets": {
+      "get": {
+        "operationId": "listWidgets",
+        "summary": "List widgets",
+        "parameters": [
+          {"$ref": "#/components/parameters/PerPage"},
+          {"name": "direction", "in": "query", "schema": {"type": "string", "enum": ["asc", "desc"]}}
+        ]
+      },
+      "post": {
+        "operationId": "createWidget",
+        "summary": "Create a widget",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/NewWidget"}}}
+        }
+      }
+    },
+    "/widgets/{widget_id}": {
+      "get": {
+        "operationId": "getWidget",
+        "summary": "Get a widget",
+        "parameters": [
+          {"name": "widget_id", "in": "path", "required": true, "schema": {"type": "string"}}
+        ]
+      }
+    }
+  }
+}
