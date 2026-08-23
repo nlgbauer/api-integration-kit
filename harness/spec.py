@@ -269,10 +269,10 @@ class SpecIndex:
                 ep = Endpoint(
                     method=method.upper(),
                     path=path,
-                    operation_id=op.get("operationId", ""),
-                    summary=op.get("summary", ""),
-                    description=(op.get("description") or "")[:400],
-                    tags=op.get("tags", []) or [],
+                    operation_id=str(op.get("operationId") or ""),
+                    summary=str(op.get("summary") or ""),
+                    description=str(op.get("description") or "")[:400],
+                    tags=[str(t) for t in (op.get("tags") or []) if t],
                     raw=op,
                     _spec=self,
                 )
