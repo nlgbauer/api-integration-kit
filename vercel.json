@@ -4,6 +4,5 @@
     "use": "@vercel/python",
     "config": { "includeFiles": "{static/**,harness/**,adapters/**,specs/**}" }
   }],
-  "routes": [{ "src": "/(.*)", "dest": "api/index.py" }],
-  "functions": { "api/index.py": { "maxDuration": 60 } }
+  "routes": [{ "src": "/(.*)", "dest": "api/index.py" }]
 }
