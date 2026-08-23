@@ -10,10 +10,11 @@ cached on disk so switching between use cases on the same API is instant.
 
 from __future__ import annotations
 
+import hmac
 import os
 import traceback
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, Response, jsonify, request, send_from_directory
 
 try:
     from dotenv import load_dotenv
@@ -27,6 +28,23 @@ from harness.solve import Solver
 from harness.spec import SpecIndex
 
 app = Flask(__name__, static_folder="static")
+
+SITE_USER = os.environ.get("SITE_USER", "")
+SITE_PASSWORD = os.environ.get("SITE_PASSWORD", "")
+
+
+@app.before_request
+def require_auth():
+    if not (SITE_USER and SITE_PASSWORD):
+        return None
+    auth = request.authorization
+    if (auth and auth.username is not None and auth.password is not None
+            and hmac.compare_digest(auth.username, SITE_USER)
+            and hmac.compare_digest(auth.password, SITE_PASSWORD)):
+        return None
+    return Response("Authentication required.", 401,
+                    {"WWW-Authenticate": 'Basic realm="API Integration Kit"'})
+
 
 _SPECS: dict[str, SpecIndex] = {}
 
