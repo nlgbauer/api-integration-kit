@@ -28,16 +28,28 @@ html,body{margin:0;padding:0}
 body{
   background:var(--paper);color:var(--ink);font-family:var(--sans);
   font-size:14px;line-height:1.5;
-  background-image:linear-gradient(rgba(20,24,29,.045) 1px,transparent 1px);
-  background-size:100% 28px;background-position:0 -1px;
 }
 .wrap{max-width:1360px;margin:0 auto;padding:0 24px 80px}
 
-header{padding:44px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:28px}
+header{padding:44px 0 24px;border-bottom:2px solid var(--ink);margin-bottom:0}
 h1{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0}
 h1 .mark{color:var(--oxide)}
 .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 .lede{max-width:62ch;margin:10px 0 0;color:var(--muted);font-size:14px}
+
+.how{border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:24px 0;margin-bottom:24px}
+@media (max-width:760px){.how{grid-template-columns:1fr;gap:18px}}
+.how h3{font-family:var(--display);font-size:14.5px;font-weight:700;margin:0 0 6px;display:flex;gap:9px;align-items:baseline}
+.how-n{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--blueprint)}
+.how p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.55}
+
+.glossary{border:1px solid var(--rule-strong);background:var(--card);padding:14px 18px;margin-bottom:28px}
+.glossary summary{cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);font-weight:600}
+.glossary dl{margin:14px 0 0}
+.glossary dt{font-family:var(--display);font-weight:700;font-size:13.5px;margin-top:12px}
+.glossary dt:first-of-type{margin-top:0}
+.glossary dd{margin:2px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5}
 
 .cols{display:grid;grid-template-columns:392px 1fr;gap:28px;align-items:start}
 @media (max-width:960px){.cols{grid-template-columns:1fr}}
@@ -46,10 +58,11 @@ h1 .mark{color:var(--oxide)}
 .panel + .panel{margin-top:20px}
 .panel h2{
   font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);margin:0 0 16px;padding-bottom:9px;border-bottom:1px solid var(--rule);
+  color:var(--muted);margin:0 0 6px;padding-bottom:9px;border-bottom:1px solid var(--rule);
   display:flex;justify-content:space-between;align-items:baseline;gap:12px
 }
 .panel h2 .step{color:var(--blueprint);font-weight:600}
+.panel-desc{font-size:12.5px;color:var(--muted);margin:0 0 16px;line-height:1.5}
 
 label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.07em;
   text-transform:uppercase;color:var(--muted);margin:14px 0 5px}
@@ -71,7 +84,11 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--blueprint);outli
 .check span{font-size:12.5px;color:var(--muted)}
 .check strong{color:var(--ink);font-weight:600;display:block;font-size:13px}
 
-.actions{display:flex;gap:10px;margin-top:20px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+@media (max-width:420px){.actions{grid-template-columns:1fr}}
+.action{display:flex;flex-direction:column;gap:8px}
+.action button{width:100%}
+.action-desc{margin:0;font-size:11.5px;color:var(--muted);line-height:1.5}
 button{
   font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
   padding:11px 16px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);
@@ -84,9 +101,13 @@ button:focus-visible{outline:2px solid var(--blueprint);outline-offset:2px}
 
 .empty{padding:34px 20px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed var(--rule-strong)}
 .empty b{display:block;color:var(--ink);font-family:var(--display);font-size:15px;margin-bottom:6px}
+.empty ol{text-align:left;margin:10px auto 0;max-width:38ch;padding-left:18px;font-size:12.5px;line-height:1.65}
+.empty li{margin-top:4px}
 
 .err{border-left:3px solid var(--oxide);background:#fff;padding:12px 14px;margin-bottom:18px}
 .err b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--oxide);display:block;margin-bottom:4px}
+.err-fix{margin-top:7px;font-size:12.5px;color:var(--ink)}
+.err-fix::before{content:"\2192  ";color:var(--verify)}
 
 /* endpoint shortlist */
 .ep{border-bottom:1px solid var(--rule);padding:11px 0;font-family:var(--mono);font-size:12px}
@@ -97,8 +118,11 @@ button:focus-visible{outline:2px solid var(--blueprint);outline-offset:2px}
 .ep-s{font-family:var(--sans);font-size:11.5px;color:var(--muted);margin:3px 0 0 55px}
 .ep-params{margin:9px 0 2px 55px;display:none;flex-wrap:wrap;gap:5px}
 .ep.open .ep-params{display:flex}
+.ep-note{display:none;margin:7px 0 0 55px;font-family:var(--sans);font-size:11px;color:var(--amber);line-height:1.5;max-width:52ch}
+.ep.open .ep-note{display:block}
 .pill{font-family:var(--mono);font-size:10.5px;padding:2px 7px;border:1px solid var(--rule-strong);color:var(--muted);background:#fff}
 .pill.req{border-color:var(--blueprint);color:var(--blueprint);font-weight:600}
+.pill.untyped{border-color:var(--amber);color:var(--amber);border-style:dashed}
 
 /* the signature: redline trace */
 .turn{display:grid;grid-template-columns:52px 1fr;margin-bottom:22px}
@@ -111,9 +135,10 @@ button:focus-visible{outline:2px solid var(--blueprint);outline-offset:2px}
 .turn-b{border-left:2px solid var(--rule-strong);padding-left:18px}
 .turn.pass .turn-b{border-left-color:var(--verify)}
 .turn.fail .turn-b{border-left-color:var(--oxide)}
-.turn-t{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.turn-t{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .turn.pass .turn-t{color:var(--verify)}
 .turn.fail .turn-t{color:var(--oxide)}
+.turn-x{font-size:12.5px;color:var(--muted);margin:0 0 12px;line-height:1.5;max-width:56ch}
 
 .call{background:#fff;border:1px solid var(--rule);padding:12px 14px;font-family:var(--mono);
   font-size:12.5px;white-space:pre-wrap;word-break:break-word;line-height:1.65}
@@ -161,23 +186,57 @@ pre.snip{background:#fff;border:1px solid var(--rule-strong);border-top:0;paddin
 
 <header>
   <div class="tag">API Integration Kit</div>
-  <h1>The spec <span class="mark">redlines</span> the model.</h1>
+  <h1>The rulebook <span class="mark">redlines</span> the model.</h1>
   <p class="lede">
-    LLMs are good at reading API docs and drafting integration code, but when they
-    get it wrong there is often no signal. The API accepts an invented parameter
-    and returns 200. This checks every generated call against the API's actual
-    spec before sending it, and shows you what was wrong and how it corrected.
+    AI is good at writing the code that connects one piece of software to another.
+    But when it gets a detail wrong, there is usually no warning. It makes up the
+    name of a setting, the other system quietly ignores it, and you get back an
+    answer that looks right and isn't. This tool checks the AI's work against the
+    other system's own rulebook before anything is sent, shows you what it got
+    wrong, and fixes it.
   </p>
 </header>
+
+<div class="how">
+  <div>
+    <h3><span class="how-n">1</span> You give it two things</h3>
+    <p>The rulebook for the software you want to connect to, and a plain-English sentence saying what you want. No code, no setup.</p>
+  </div>
+  <div>
+    <h3><span class="how-n">2</span> It narrows the options</h3>
+    <p>A rulebook can list a thousand things the software can do. It shortlists the handful that match your sentence, then asks the AI to write the request using only those.</p>
+  </div>
+  <div>
+    <h3><span class="how-n">3</span> It checks the work</h3>
+    <p>Every detail is compared against the rulebook. Anything the AI made up gets caught and corrected before it leaves your computer. You end up with working code you can copy.</p>
+  </div>
+</div>
+
+<details class="glossary">
+  <summary>New here? Start with these three words</summary>
+  <dl>
+    <dt>API</dt>
+    <dd>How one company's software lets other software talk to it.</dd>
+    <dt>Endpoint</dt>
+    <dd>One specific thing an API can do, at its own address. A large API has hundreds.</dd>
+    <dt>Spec</dt>
+    <dd>The rulebook &mdash; one file listing every endpoint, every setting it accepts, and what counts as a valid value. Its technical name is the OpenAPI spec.</dd>
+  </dl>
+</details>
 
 <div class="cols">
   <div>
     <div class="panel">
       <h2><span>Who you're integrating with</span><span class="step">01</span></h2>
-      <label for="spec">OpenAPI spec URL</label>
+      <div class="panel-desc">Point this at the API you want to connect to, and give it your key if it needs one.</div>
+      <label for="spec">Rulebook</label>
       <input type="text" id="spec" spellcheck="false"
              value="https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json">
-      <div class="hint">Any OpenAPI 3.x document, JSON or YAML.</div>
+      <div class="hint">The rulebook file for the software you want to connect to. Paste a web address, or the location of a file on this computer.</div>
+
+      <label for="auth-v">Auth value</label>
+      <input type="text" id="auth-v" placeholder="Bearer ghp_..." spellcheck="false">
+      <div class="hint">Your key for this API, written exactly the way it asks for it. Most want the word Bearer, then a space, then your key. Leave it empty to look around without sending anything. It stays on this computer and never appears in the code you copy out.</div>
 
       <div class="row">
         <div>
@@ -189,14 +248,12 @@ pre.snip{background:#fff;border:1px solid var(--rule-strong);border-top:0;paddin
           <input type="text" id="base" placeholder="from spec" spellcheck="false">
         </div>
       </div>
-
-      <label for="auth-v">Auth value</label>
-      <input type="text" id="auth-v" placeholder="Bearer ghp_..." spellcheck="false">
-      <div class="hint">Stays on your machine. Never written into generated code.</div>
+      <div class="hint">Both are usually fine as they are. Auth header name is the label your key travels under. Most APIs call it Authorization, but a few pick their own name. Base URL is the web address requests go to, and it fills itself in from the rulebook.</div>
     </div>
 
     <div class="panel">
       <h2><span>What you want it to do</span><span class="step">02</span></h2>
+      <div class="panel-desc">Describe your task in plain English. The AI turns this sentence into an actual request.</div>
       <label for="uc">Use case</label>
       <textarea id="uc" spellcheck="false">List the 3 repositories owned by torvalds, most recently pushed first</textarea>
 
@@ -207,8 +264,14 @@ pre.snip{background:#fff;border:1px solid var(--rule-strong);border-top:0;paddin
       </label>
 
       <div class="actions">
-        <button class="ghost" id="btn-i">Show endpoints</button>
-        <button id="btn-s">Build the call</button>
+        <div class="action">
+          <button class="ghost" id="btn-i">Find endpoints</button>
+          <p class="action-desc">Start here. Shows which parts of the API look relevant to what you typed, so you can check it understood you. Free, and nothing is sent anywhere.</p>
+        </div>
+        <div class="action">
+          <button id="btn-s">Build the call</button>
+          <p class="action-desc">The real thing. Writes an actual request to one of those endpoints, using your real key, and sends it. Costs a fraction of a cent.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -217,19 +280,32 @@ pre.snip{background:#fff;border:1px solid var(--rule-strong);border-top:0;paddin
     <div id="err"></div>
 
     <div class="panel">
-      <h2><span>Endpoints in play</span><span class="step">03</span></h2>
-      <div id="eps"><div class="empty"><b>Nothing loaded yet</b>
-        Show endpoints to see the shortlist for your use case before spending anything.</div></div>
+      <h2><span>Matching endpoints</span><span class="step">03</span></h2>
+      <div class="panel-desc">The parts of this API that best match your words, closest first. The AI only gets to choose from this list, so if what you need is missing here, it cannot be picked. Click any row to see what information that part of the API asks for.</div>
+      <div id="eps"><div class="empty"><b>Nothing here yet</b>
+        <ol>
+          <li>Is the thing you wanted in the list?</li>
+          <li>If not, try different words &mdash; the search matches on wording.</li>
+          <li>Click a row to see what it requires. Blue means required.</li>
+        </ol>
+      </div></div>
     </div>
 
     <div class="panel">
-      <h2><span>Validate, debug, correct, retest</span><span class="step">04&thinsp;&ndash;&thinsp;07</span></h2>
+      <h2><span>Attempts and corrections</span><span class="step">04&thinsp;&ndash;&thinsp;07</span></h2>
+      <div class="panel-desc">The AI gets up to three tries, shown here in order. Each one shows the request it wrote and what happened to it. A green number means that try worked. Red means something was wrong and it went round again.</div>
       <div id="trace"><div class="empty"><b>No run yet</b>
-        Each attempt appears here with what the spec rejected and what changed on the retry.</div></div>
+        <ol>
+          <li>Crossed-out red is a setting the AI made up.</li>
+          <li>The green word underneath is the real name from the rulebook.</li>
+          <li>If try 1 is green, it got it right immediately.</li>
+        </ol>
+      </div></div>
     </div>
 
     <div class="panel" id="out-p" style="display:none">
       <h2><span>Your integration</span><span class="step">Output</span></h2>
+      <div class="panel-desc">Working code for the call that worked, ready to paste into your project.</div>
       <div class="tabs" id="tabs"></div>
       <pre class="snip" id="snip"></pre>
       <button class="ghost copy" id="btn-c">Copy</button>
@@ -255,8 +331,20 @@ function payload(){
   };
 }
 
+/* Plain-English next step for common failure messages. Purely cosmetic --
+   does not change what failed or why, just suggests what to try next. */
+function suggestFix(msg){
+  const m = (msg || '').toLowerCase();
+  if(m.includes('no such file')) return 'Check the spelling, or paste a web address instead.';
+  if(m.includes('anthropic_api_key') || m.includes('api key') || m.includes('api_key')) return 'Add it to .env and restart.';
+  if(m.includes('401') || m.includes('403')) return 'The API refused your key. Check the auth value, including whether it needs "Bearer" in front.';
+  return '';
+}
+
 function showErr(msg){
-  $('err').innerHTML = msg ? `<div class="err"><b>Could not continue</b>${esc(msg)}</div>` : '';
+  if(!msg){ $('err').innerHTML = ''; return; }
+  const fix = suggestFix(msg);
+  $('err').innerHTML = `<div class="err"><b>Could not continue</b>${esc(msg)}${fix ? `<div class="err-fix">${esc(fix)}</div>` : ''}</div>`;
 }
 
 async function post(url, body){
@@ -287,16 +375,27 @@ function renderCall(call, errors){
   return `<div class="call">${s}</div>`;
 }
 
-function renderTurn(t){
+function renderTurn(t, totalTurns){
   const failed = t.preflight_ok === false || (t.status && (t.status < 200 || t.status >= 300));
   const passed = t.status && t.status >= 200 && t.status < 300;
   const cls = passed ? 'pass' : (failed ? 'fail' : '');
 
   let title = 'Attempt';
-  if(t.preflight_ok === false) title = 'Rejected by the spec, before sending';
-  else if(t.blocked) title = 'Held back';
-  else if(passed) title = `Accepted \u00b7 HTTP ${t.status}`;
-  else if(t.status) title = `Sent \u00b7 HTTP ${t.status}`;
+  let explain = '';
+  if(t.preflight_ok === false){
+    title = 'Caught a mistake, nothing sent';
+    explain = 'Something below does not exist in this API. It was stopped here, so nothing left your computer. The AI was told what was wrong and went round again.';
+  } else if(t.blocked){
+    title = 'Held back';
+  } else if(passed){
+    title = 'This one worked';
+    explain = totalTurns === 1
+      ? 'The AI got it right immediately. Everything matched the rulebook and the API accepted it, so there was nothing to fix.'
+      : 'Everything matched the rulebook, so it was sent, and the API accepted it.';
+  } else if(t.status){
+    title = 'Sent, but the API said no';
+    explain = 'Everything matched the rulebook, so it was sent. The API still turned it down, which usually means the key is wrong or you asked for something that does not exist.';
+  }
 
   let body = t.call ? renderCall(t.call, t.errors) :
     `<div class="call">${esc(t.parse_error || 'No call produced')}</div>`;
@@ -304,36 +403,50 @@ function renderTurn(t){
   if(t.errors && t.errors.length){
     body += '<div class="redline">' + t.errors.map(e => {
       const cls = e.hallucination ? 'h' : 'm';
-      const label = e.hallucination ? 'invented' : 'malformed';
+      const label = e.hallucination ? 'made up' : 'wrong kind';
       const fix = e.suggestion ? ` <em>Use ${esc(e.suggestion)}.</em>` : '';
       return `<div class="rl ${cls}"><div class="rl-k">${label}</div>
         <div class="rl-m">${esc(e.field)} &mdash; ${esc(e.message)}${fix}</div></div>`;
     }).join('') + '</div>';
   }
   if(t.blocked) body += `<div class="blocked">${esc(t.blocked)}</div>`;
-  if(t.api_error) body += `<div class="redline"><div class="rl h">
-      <div class="rl-k">api said</div><div class="rl-m">${esc(t.api_error)}</div></div></div>`;
+  if(t.api_error){
+    const fix = suggestFix(t.api_error);
+    body += `<div class="redline"><div class="rl h">
+        <div class="rl-k">api said</div><div class="rl-m">${esc(t.api_error)}${fix ? `<div class="err-fix">${esc(fix)}</div>` : ''}</div></div></div>`;
+  }
   if(t.response_preview) body += `<details class="resp"><summary>Response</summary>
       <pre>${esc(JSON.stringify(t.response_preview, null, 2))}</pre></details>`;
 
   return `<div class="turn ${cls}"><div class="turn-n">${t.n}</div>
-    <div class="turn-b"><div class="turn-t">${title}</div>${body}</div></div>`;
+    <div class="turn-b"><div class="turn-t">${title}</div>${explain ? `<div class="turn-x">${esc(explain)}</div>` : ''}${body}</div></div>`;
 }
 
 function renderEndpoints(eps){
   if(!eps.length){
-    $('eps').innerHTML = `<div class="empty"><b>No endpoints matched</b>
-      Try naming the resource you want, like "issues" or "repositories".</div>`;
+    $('eps').innerHTML = `<div class="empty"><b>Nothing here yet</b>
+      <ol>
+        <li>Is the thing you wanted in the list?</li>
+        <li>If not, try different words &mdash; the search matches on wording.</li>
+        <li>Click a row to see what it requires. Blue means required.</li>
+      </ol></div>`;
     return;
   }
   $('eps').innerHTML = eps.map((e,i) => {
-    const params = (e.params||[]).map(p =>
-      `<span class="pill ${p.required?'req':''}">${esc(p.name)} <span style="opacity:.6">${esc(p.in)}</span></span>`
-    ).join('');
+    const all = e.params || [];
+    const untyped = all.filter(p => !p.type || p.type === 'any');
+    const params = all.map(p => {
+      const isUntyped = !p.type || p.type === 'any';
+      return `<span class="pill ${p.required?'req':''} ${isUntyped?'untyped':''}">${esc(p.name)} <span style="opacity:.6">${esc(p.in)}</span></span>`;
+    }).join('');
+    const note = untyped.length
+      ? `<div class="ep-note">${untyped.length} of these ${all.length} are left undefined in the rulebook, with no list of what counts as a valid answer. This tool can still catch a made-up name, but it cannot tell you whether the value you put in is one the API accepts.</div>`
+      : '';
     return `<div class="ep" data-i="${i}">
       <div class="ep-h"><span class="verb">${esc(e.method)}</span><span class="ep-p">${esc(e.path)}</span></div>
       ${e.summary ? `<div class="ep-s">${esc(e.summary)}</div>` : ''}
       ${params ? `<div class="ep-params">${params}</div>` : ''}
+      ${note}
     </div>`;
   }).join('');
   document.querySelectorAll('.ep').forEach(el =>
@@ -363,7 +476,7 @@ function renderOutput(r){
 
 $('btn-i').onclick = async () => {
   showErr(''); const b = $('btn-i'); b.disabled = true;
-  $('eps').innerHTML = '<div class="empty"><span class="spin"></span>Reading the spec</div>';
+  $('eps').innerHTML = '<div class="empty"><span class="spin"></span>Reading the rulebook</div>';
   try{
     const d = await post('/api/inspect', payload());
     if(!$('base').value) $('base').placeholder = d.base_url;
@@ -380,7 +493,7 @@ $('btn-s').onclick = async () => {
     const d = await post('/api/solve', payload());
     const r = d.result;
     renderEndpoints(r.endpoints_considered || []);
-    $('trace').innerHTML = r.turns.map(renderTurn).join('') ||
+    $('trace').innerHTML = r.turns.map((t,_,arr) => renderTurn(t, arr.length)).join('') ||
       '<div class="empty"><b>No attempts recorded</b>Something stopped before the first call.</div>';
     renderOutput(r);
   }catch(e){ showErr(e.message); $('trace').innerHTML = ''; }
